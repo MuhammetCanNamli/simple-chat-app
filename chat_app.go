@@ -15,6 +15,9 @@ type Message struct {
 	Message  string `json:"message"`
 }
 
+// Configure the upgrader
+var upgrader = websocket.Upgrader{}
+
 func main() {
 
 	// Create a simple file server
