@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -27,6 +28,16 @@ func main() {
 
 	// Configure websocket route
 	http.HandleFunc("/ws", handleConnections)
+
+	// Start listening for incoming chat messages
+	go handleMessage()
+
+	// Start the server on localhost port 8000 and log any errors
+	fmt.Println("Server running on localhost:8000")
+	err := http.ListenAndServe(":8000", nil)
+	if err != nil {
+		log.Fatal("ListenAndServe: ", err)
+	}
 }
 
 func handleConnections(w http.ResponseWriter, r *http.Request) {
