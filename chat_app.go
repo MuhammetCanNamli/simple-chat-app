@@ -2,7 +2,12 @@ package main
 
 import (
 	"net/http"
+
+	"github.com/gorilla/websocket"
 )
+
+var clients = make(map[*websocket.Conn]bool)
+var broadcast = make(chan Message)
 
 // Define our message object
 type Message struct {
