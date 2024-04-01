@@ -16,3 +16,11 @@ func main() {
 	fs := http.FileServer(http.Dir("public"))
 	http.Handle("/", fs)
 }
+
+func handleConnections(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func handleMessage() {
+
+}
