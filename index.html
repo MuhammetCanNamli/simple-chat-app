@@ -4,11 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebSocket Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        #messages {
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        #layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: calc(100% - -100px);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <div id="messages"></div>
-    <input type="text" id="messageInput">
-    <button onclick="sendMessage()">Send</button>
+
+    <div id="layout">
+        <input type="text" id="messageInput" placeholder="Type your message..." onkeydown="handleKeyDown(event)">
+        <button onclick="sendMessage()">Send</button>
+    </div>
 
     <script>
         const socket = new WebSocket("ws://localhost:8000/ws");
@@ -17,15 +72,23 @@
             const message = JSON.parse(event.data);
             const messagesDiv = document.getElementById('messages');
             messagesDiv.innerHTML += '<p><strong>' + message.username + ': </strong>' + message.message + '</p>';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Otomatik olarak aşağı kaydır
         };
 
         function sendMessage() {
             const input = document.getElementById('messageInput');
-            const message = input.value;
-            const username = prompt('Enter your username:');
+            const message = input.value.trim();
+            if (message === '') return; // Boş mesaj göndermeyi engelle
+            const username = prompt('Enter your username:') || 'Anonymous'; // Kullanıcı adını al
             const msg = { username, message };
             socket.send(JSON.stringify(msg));
             input.value = '';
+        }
+
+        function handleKeyDown(event) {
+            if (event.keyCode === 13) {
+                sendMessage();
+            }
         }
     </script>
 </body>
