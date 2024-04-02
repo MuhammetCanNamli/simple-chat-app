@@ -8,6 +8,7 @@
 <body>
     <div id="messages"></div>
     <input type="text" id="messageInput">
+    <button onclick="sendMessage()">Send</button>
 
     <script>
         const socket = new WebSocket("ws://localhost:8000/ws");
@@ -19,7 +20,12 @@
         };
 
         function sendMessage() {
-        
+            const input = document.getElementById('messageInput');
+            const message = input.value;
+            const username = prompt('Enter your username:');
+            const msg = { username, message };
+            socke.send(JSON.stringify(msg));
+            inut.value = '';
         }
     </script>
 </body>
