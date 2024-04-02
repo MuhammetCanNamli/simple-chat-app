@@ -17,9 +17,6 @@ type Message struct {
 	Message  string `json:"message"`
 }
 
-// Configure the upgrader
-var upgrader = websocket.Upgrader{}
-
 func main() {
 	// Create a simple file server
 	fs := http.FileServer(http.Dir("public"))
