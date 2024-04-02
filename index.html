@@ -15,8 +15,8 @@
 
         socket.onmessage = function(event) {
             const message = JSON.parse(event.data);
-            const messageDiv = document.getElementById('messages');
-            messageDiv.innerHTML += '<p><strong>' + message.username + + ': </strong>' + message.message + '</p>';
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML += '<p><strong>' + message.username + ': </strong>' + message.message + '</p>';
         };
 
         function sendMessage() {
@@ -24,8 +24,8 @@
             const message = input.value;
             const username = prompt('Enter your username:');
             const msg = { username, message };
-            socke.send(JSON.stringify(msg));
-            inut.value = '';
+            socket.send(JSON.stringify(msg));
+            input.value = '';
         }
     </script>
 </body>
