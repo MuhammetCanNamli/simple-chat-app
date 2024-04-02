@@ -8,8 +8,8 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var clients = make(map[*websocket.Conn]bool)
-var broadcast = make(chan Message)
+var clients = make(map[*websocket.Conn]bool) // connected clients
+var broadcast = make(chan Message)           // broadcast channel
 
 // Define our message object
 type Message struct {
@@ -21,13 +21,21 @@ type Message struct {
 var upgrader = websocket.Upgrader{}
 
 func main() {
-
 	// Create a simple file server
 	fs := http.FileServer(http.Dir("public"))
 	http.Handle("/", fs)
 
+	// Configure websocket upgrader
+	upgrader := websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		},
+	}
+
 	// Configure websocket route
-	http.HandleFunc("/ws", handleConnections)
+	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		handleConnections(w, r, upgrader)
+	})
 
 	// Start listening for incoming chat messages
 	go handleMessage()
@@ -40,8 +48,7 @@ func main() {
 	}
 }
 
-func handleConnections(w http.ResponseWriter, r *http.Request) {
-
+func handleConnections(w http.ResponseWriter, r *http.Request, upgrader websocket.Upgrader) {
 	// Upgrade initial GET request to a websocket
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
